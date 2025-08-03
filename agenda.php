@@ -1,198 +1,286 @@
-<?php
-include 'dashboard/koneksi.php';
+<?php 
+session_start();
+if (!isset($_SESSION['admin'])) {
+    header("Location: ../login.php");
+    exit;
+}
+
+include '../koneksi.php';
+$query = "SELECT * FROM agenda ORDER BY tanggal ASC, waktu ASC";
+$result = mysqli_query($conn, $query);
 ?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agenda Publik - Prokompim</title>
-    <link rel="stylesheet" href="style.css?v=3">
+    <title>Agenda Pimpinan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        .agenda-section {
-            padding: 80px 20px 40px;
-            background-color: #f5f5f5;
-            text-align: center;
+        * {
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
         }
 
-        .agenda-section h2 {
+        body {
+            background: #f4f7fc;
+            color: #333;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 240px;
+            background: #0a4275;
+            color: white;
+            padding-top: 40px;
+            position: fixed;
+            height: 100%;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 16px 24px;
+            color: white;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: #1e90ff;
+        }
+
+        .topbar {
+            background: #ffffff;
+            padding: 16px 24px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+            position: fixed;
+            top: 0;
+            left: 240px;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .topbar h1 {
+            font-size: 20px;
+            color: #0a4275;
+        }
+
+        .logout-btn {
+            padding: 8px 14px;
+            background: #ef233c;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #d90429;
+        }
+
+        .main {
+            flex: 1;
+            margin-left: 240px;
+            padding: 30px 40px;
+            margin-top: 80px;
+        }
+
+        .main h2 {
             font-size: 28px;
-            margin-top: 40px;
-            margin-bottom: 10px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #0a4275;
         }
 
-        .agenda-section p {
-            margin-bottom: 30px;
-            font-size: 16px;
-            color: #555;
+        .add-button {
+            background: #1e90ff;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-block;
+            margin-bottom: 20px;
         }
 
-        .table-responsive {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            width: 100%;
+        .add-button:hover {
+            background: #0f68c3;
         }
 
-        table.agenda-table {
-            min-width: 600px;
+        table {
             width: 100%;
             border-collapse: collapse;
-            background-color: #fff;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            background: white;
+            box-shadow: 0 0 8px rgba(0,0,0,0.05);
+            border-radius: 10px;
+            overflow: hidden;
         }
 
-        table.agenda-table th,
-        table.agenda-table td {
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            text-align: center;
+        table th, table td {
+            padding: 14px;
+            border-bottom: 1px solid #eee;
+            text-align: left;
         }
 
-        table.agenda-table th {
-            background-color: #2c3e50;
-            color: #fff;
+        table th {
+            background: #0a4275;
+            color: white;
         }
 
-        .container {
-            max-width: 1000px;
-            margin: auto;
+        table tr:hover {
+            background-color: #f1faff;
         }
 
-        /* Hilangkan background beranda di halaman ini */
-        body:not(.home) {
-            background: none !important;
-            background-image: none !important;
+        .btn {
+            padding: 6px 10px;
+            font-size: 14px;
+            border-radius: 6px;
+            color: white;
+            text-decoration: none;
+            margin-right: 6px;
+        }
+
+        .btn-edit {
+            background: #10b981;
+        }
+
+        .btn-edit:hover {
+            background: #059669;
+        }
+
+        .btn-delete {
+            background: #ef4444;
+        }
+
+        .btn-delete:hover {
+            background: #dc2626;
+        }
+
+        @media screen and (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            .main {
+                margin-left: 0;
+            }
+            .topbar {
+                left: 0;
+            }
+
+            table thead {
+                display: none;
+            }
+
+            table, table tbody, table tr, table td {
+                display: block;
+                width: 100%;
+            }
+
+            table tr {
+                margin-bottom: 15px;
+                background: white;
+                border-radius: 10px;
+                box-shadow: 0 0 4px rgba(0,0,0,0.05);
+                padding: 10px;
+            }
+
+            table td {
+                text-align: right;
+                position: relative;
+                padding-left: 50%;
+            }
+
+            table td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 14px;
+                top: 14px;
+                font-weight: bold;
+                color: #555;
+                text-align: left;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
 
-<!-- Navigasi -->
-<header>
-    <div class="logo">PROKOMPIM</div>
-    <button class="menu-toggle" id="menu-toggle" aria-label="Toggle Menu">
-        <i class="fas fa-bars"></i>
-    </button>
-    <nav id="nav-menu">
-        <ul>
-            <li><a href="index.php">BERANDA</a></li>
-            <li><a href="tentang_kami.php">TENTANG KAMI</a></li>
-            <li><a href="galeri.php">DOKUMENTASI</a></li>
-            <li><a href="agenda.php" class="active">AGENDA</a></li>
-            <li><a href="kontak.php">PENGADUAN</a></li>
-            <li><a href="login.php" class="btn-masuk">Login</a></li>
-        </ul>
-    </nav>
-</header>
+<div class="sidebar">
+    <a href="index.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+    <a href="agenda.php" class="active"><i class="fas fa-calendar-alt"></i> Agenda</a>
+    <a href="galeri.php"><i class="fas fa-image"></i> Galeri</a>
+    <a href="kontak.php"><i class="fas fa-envelope"></i> Pengaduan</a>
+</div>
 
-<!-- Konten Agenda -->
-<section class="agenda-section">
-    <div class="container">
-        <h2>Agenda Kegiatan Pimpinan</h2>
-        <p>Berikut adalah daftar agenda kegiatan dari Bagian Protokol dan Komunikasi Pimpinan Kota Tidore Kepulauan:</p>
-        
-        <div class="table-responsive">
-            <table class="agenda-table">
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>Hari/Tanggal</th>
-                        <th>Waktu</th>
-                        <th>Tempat</th>
-                        <th>Kegiatan</th>
-                        <th>Keterangan</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    $no = 1;
-                    $query = "SELECT * FROM agenda ORDER BY tanggal DESC";
-                    $result = mysqli_query($koneksi, $query);
-                    if (mysqli_num_rows($result) > 0) {
-                        while ($row = mysqli_fetch_assoc($result)) {
-                            echo "<tr>";
-                            echo "<td>{$no}</td>";
-                            echo "<td>{$row['hari']}, " . date('d M Y', strtotime($row['tanggal'])) . "</td>";
-                            echo "<td>{$row['waktu']}</td>";
-                            echo "<td>{$row['tempat']}</td>";
-                            echo "<td>{$row['kegiatan']}</td>";
-                            echo "<td>{$row['keterangan']}</td>";
-                            echo "</tr>";
-                            $no++;
-                        }
-                    } else {
-                        echo '<tr><td colspan="6">Tidak ada agenda yang tersedia.</td></tr>';
-                    }
-                    ?>
-                </tbody>
-            </table>
-        </div>
+<div class="topbar">
+    <h1>Agenda Pimpinan - Selamat Datang, <?= htmlspecialchars($_SESSION['admin']) ?></h1>
+    <a href="../logout.php" class="logout-btn">Logout</a>
+</div>
 
-    </div>
-</section>
+<div class="main fade-in">
+    <h2>Data Agenda Pimpinan</h2>
+    <a href="agenda_tambah.php" class="add-button">+ Tambah Agenda</a>
 
-<!-- Footer -->
-<footer class="footer">
-    <div class="footer-container">
-        <div class="footer-section">
-            <h3>PROKOMPIM</h3>
-            <p>Website ini dibuat untuk mendokumentasikan kegiatan bagian Protokol dan Komunikasi Pimpinan Kota Tidore Kepulauan secara digital dan informatif.</p>
-        </div>
-        <div class="footer-section">
-            <h3>PRODUK</h3>
-            <ul>
-                <li><a href="index.php">Beranda</a></li>
-                <li><a href="tentang_kami.php">Tentang Kami</a></li>
-                <li><a href="galeri.php">Dokumentasi</a></li>
-                <li><a href="agenda.php">Agenda</a></li>
-                <li><a href="kontak.php">Pengaduan</a></li>
-            </ul>
-        </div>
-        <div class="footer-section">
-            <h3>KONTAK</h3>
-            <ul class="footer-contact">
-                <li><i class="fas fa-map-marker-alt"></i><span>Alamat:</span>
-                    <a href="https://www.google.com/maps?q=MCCW+JMG,+Tomagoba,+Tidore,+Kota+Tidore+Kepulauan,+Maluku+Utara" target="_blank">Kantor Walikota Tidore, Maluku Utara</a>
-                </li>
-                <li><i class="fas fa-envelope"></i><span>Email:</span>
-                    <a href="mailto:prokompim@tidore.go.id">prokompim@tidore.go.id</a>
-                </li>
-                <li><i class="fab fa-whatsapp"></i><span>WhatsApp:</span>
-                    <a href="https://wa.me/6281234567890" target="_blank">+62 812 3456 7890</a>
-                </li>
-                <li><i class="fab fa-facebook"></i><span>Facebook:</span>
-                    <a href="https://facebook.com/tidore.kepulauan" target="_blank">facebook.com/tidore.kepulauan</a>
-                </li>
-                <li><i class="fab fa-twitter"></i><span>Twitter:</span>
-                    <a href="https://twitter.com/tidoreofficial" target="_blank">@tidoreofficial</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-    <div class="footer-bottom">
-        <p>© 2025 Website PROKOMPIM Kota Tidore Kepulauan</p>
-                <div class="social-icons">
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-facebook" viewBox="0 0 16 16">
-  <path d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951"/>
-</svg>
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-instagram" viewBox="0 0 16 16">
-  <path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.9 3.9 0 0 0-1.417.923A3.9 3.9 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.9 3.9 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.9 3.9 0 0 0-.923-1.417A3.9 3.9 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599s.453.546.598.92c.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.5 2.5 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.5 2.5 0 0 1-.92-.598 2.5 2.5 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233s.008-2.388.046-3.231c.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92s.546-.453.92-.598c.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92m-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217m0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334"/>
-</svg>
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-twitter-x" viewBox="0 0 16 16">
-  <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z"/>
-</svg>
-        </div>
-    </div>
-</footer>
+    <table>
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Hari</th>
+                <th>Tanggal</th>
+                <th>Waktu</th>
+                <th>Tempat</th>
+                <th>Kegiatan</th>
+                <th>Keterangan</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+            $no = 1;
+            while ($row = mysqli_fetch_assoc($result)) {
+                echo "<tr>
+                    <td data-label='No'>{$no}</td>
+                    <td data-label='Hari'>" . htmlspecialchars($row['hari']) . "</td>
+                    <td data-label='Tanggal'>" . htmlspecialchars($row['tanggal']) . "</td>
+                    <td data-label='Waktu'>" . htmlspecialchars($row['waktu']) . "</td>
+                    <td data-label='Tempat'>" . htmlspecialchars($row['tempat']) . "</td>
+                    <td data-label='Kegiatan'>" . htmlspecialchars($row['kegiatan']) . "</td>
+                    <td data-label='Keterangan'>" . htmlspecialchars($row['keterangan']) . "</td>
+                    <td data-label='Aksi'>
+                        <a href='edit_agenda.php?id={$row['id']}' class='btn btn-edit'><i class='fas fa-pen'></i></a>
+                        <a href='hapus_agenda.php?id={$row['id']}' class='btn btn-delete' onclick='return confirm(\"Yakin ingin menghapus agenda ini?\")'><i class='fas fa-trash'></i></a>
+                    </td>
+                </tr>";
+                $no++;
+            }
 
-<script>
-    const toggleBtn = document.getElementById('menu-toggle');
-    const navMenu = document.getElementById('nav-menu');
-    toggleBtn.addEventListener('click', () => {
-        navMenu.classList.toggle('active');
-    });
-</script>
+            if (mysqli_num_rows($result) === 0) {
+                echo "<tr><td colspan='8' style='text-align:center;'>Belum ada data agenda.</td></tr>";
+            }
+            ?>
+        </tbody>
+    </table>
+</div>
 
 </body>
 </html>

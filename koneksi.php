@@ -1,12 +1,9 @@
 <?php
-$host = "localhost";
-$user = "root";
-$pass = "";
-$db   = "prokompim"; // pastikan nama database-nya sesuai
+// koneksi.php
+$koneksi = mysqli_connect("localhost", "root", "", "prokompim");
 
-$conn = mysqli_connect($host, $user, $pass, $db);
-
-if (!$conn) {
-    die("Koneksi gagal: " . mysqli_connect_error());
+// Cek koneksi
+if (!$koneksi) {
+    die("Koneksi database gagal: " . mysqli_connect_error());
 }
 ?>

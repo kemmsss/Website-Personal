@@ -1,139 +1,208 @@
 <?php
-include 'koneksi.php';
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $nama   = mysqli_real_escape_string($conn, $_POST["nama"]);
-    $email  = mysqli_real_escape_string($conn, $_POST["email"]);
-    $subjek = mysqli_real_escape_string($conn, $_POST["subjek"]);
-    $pesan  = mysqli_real_escape_string($conn, $_POST["pesan"]);
-
-    $query = "INSERT INTO kontak (nama, email, subjek, pesan) VALUES ('$nama', '$email', '$subjek', '$pesan')";
-    $result = mysqli_query($conn, $query);
-
-    if ($result) {
-        echo "<script>alert('Pesan berhasil dikirim!'); window.location.href='kontak.php';</script>";
-    } else {
-        echo "Gagal mengirim pesan: " . mysqli_error($conn);
-    }
+session_start();
+if (!isset($_SESSION['admin'])) {
+    header("Location: ../login.php");
+    exit;
 }
+
+include '../koneksi.php';
+$query = "SELECT * FROM kontak ORDER BY tanggal DESC";
+$result = mysqli_query($conn, $query);
 ?>
 
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kontak Kami - Prokompim</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Kontak Masuk - Prokompim</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background: #f4f7fc;
+            color: #333;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 240px;
+            background: #0a4275;
+            color: white;
+            padding-top: 40px;
+            position: fixed;
+            height: 100%;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+        .sidebar a {
+            display: block;
+            padding: 16px 24px;
+            color: white;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: #1e90ff;
+        }
+
+        .main {
+            flex: 1;
+            margin-left: 240px;
+            padding: 30px 40px;
+        }
+
+        .topbar {
+            background: #ffffff;
+            padding: 16px 24px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+            position: fixed;
+            top: 0;
+            left: 240px;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .topbar h1 {
+            font-size: 20px;
+            color: #0a4275;
+        }
+
+        .logout-btn {
+            padding: 8px 14px;
+            background: #ef233c;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+        .logout-btn:hover {
+            background: #d90429;
+        }
+
+        .content {
+            margin-top: 80px;
+        }
+
+        h2 {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #0a4275;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 0 8px rgba(0,0,0,0.05);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        table th, table td {
+            padding: 14px;
+            border-bottom: 1px solid #eee;
+            text-align: left;
+        }
+
+        table th {
+            background: #0a4275;
+            color: white;
+        }
+
+        table tr:hover {
+            background-color: #f1faff;
+        }
+
+        @media screen and (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            .main {
+                margin-left: 0;
+            }
+            .topbar {
+                left: 0;
+            }
+        }
+
+        /* Animasi sederhana */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
 </head>
 <body>
-    <!-- Navigasi Atas -->
-<header>
-    <div class="logo">PROKOMPIM</div>
-    <button class="menu-toggle" id="menu-toggle" aria-label="Toggle Menu">
-        <i class="fas fa-bars"></i>
-    </button>
-    <nav id="nav-menu">
-        <ul>
-            <li><a href="index.php">BERANDA</a></li>
-            <li><a href="tentang_kami.php">TENTANG KAMI</a></li>
-            <li><a href="galeri.php">DOKUMENTASI</a></li>
-            <li><a href="agenda.php">AGENDA</a></li>
-            <li><a href="kontak.php">PENGADUAN</a></li>
-            <li><a href="login.php" class="btn-masuk">Login</a></li>
-        </ul>
-    </nav>
-</header>
-    <!-- Form Kontak -->
-    <section class="kontak-section">
-        <h2>Sampaikan Laporan Anda</h2>
-        <p>Silahkan kirimkan laporan melalui di bawah ini</p>
 
-        <form action="kontak.php" method="post" class="form-kontak">
-            <input type="text" name="nama" placeholder="Masukkan Nama Anda" required>
-            <input type="email" name="email" placeholder="Masukkan Email Anda" required>
-            <input type="text" name="subjek" placeholder="Masukkan Subjek Pesan" required>
-            <textarea name="pesan" rows="6" placeholder="Masukkan Keluhan Anda" required></textarea>
-            <button type="submit">Kirim</button>
-        </form>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-container">
-            <div class="footer-section">
-                <h3>PROKOMPIM</h3>
-                <p>
-                    Website ini dibuat untuk mendokumentasikan kegiatan bagian Protokol dan Komunikasi Pimpinan Kota Tidore Kepulauan
-                    secara digital dan informatif.
-                </p>
-            </div>
-            <div class="footer-section">
-                <h3>PRODUK</h3>
-                <ul>
-                    <li><a href="index.php">Beranda</a></li>
-                    <li><a href="tentang_kami.php">Tentang Kami</a></li>
-                    <li><a href="galeri.php">Dokumentasi</a></li>
-                    <li><a href="agenda.php">Agenda</a></li>
-                    <li><a href="kontak.php">Pengaduan</a></li>
-                </ul>
-            </div>
-<div class="footer-section">
-  <h3>KONTAK</h3>
-  <ul class="footer-contact">
-    <li>
-      <i class="fas fa-map-marker-alt"></i>
-      <span>Alamat:</span>
-      <a href="https://www.google.com/maps?q=MCCW+JMG,+Tomagoba,+Tidore,+Kota+Tidore+Kepulauan,+Maluku+Utara" target="_blank">
-        Kantor Walikota Tidore, Maluku Utara
-      </a>
-    </li>
-    <li>
-      <i class="fas fa-envelope"></i>
-      <span>Email:</span>
-      <a href="mailto:prokompim@tidore.go.id">prokompim@tidore.go.id</a>
-    </li>
-    <li>
-      <i class="fab fa-whatsapp"></i>
-      <span>WhatsApp:</span>
-      <a href="https://wa.me/6281234567890" target="_blank">+62 812 3456 7890</a>
-    </li>
-    <li>
-      <i class="fab fa-facebook"></i>
-      <span>Facebook:</span>
-      <a href="https://facebook.com/tidore.kepulauan" target="_blank">facebook.com/tidore.kepulauan</a>
-    </li>
-    <li>
-      <i class="fab fa-twitter"></i>
-      <span>Twitter:</span>
-      <a href="https://twitter.com/tidoreofficial" target="_blank">@tidoreofficial</a>
-    </li>
-  </ul>
+<div class="sidebar">
+    <a href="index.php" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+    <a href="agenda.php"><i class="fas fa-calendar-alt"></i> Agenda</a>
+    <a href="galeri.php"><i class="fas fa-image"></i> Galeri</a>
+    <a href="kontak.php"><i class="fas fa-envelope"></i> Pengaduan</a>
 </div>
-        </div>
-        <div class="footer-bottom">
-            <p>© 2025 Copyright - Website PROKOMPIM Kota Tidore Kepulauan</p>
-            <div class="social-icons">
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-facebook" viewBox="0 0 16 16">
-  <path d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951"/>
-</svg>
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-instagram" viewBox="0 0 16 16">
-  <path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.9 3.9 0 0 0-1.417.923A3.9 3.9 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.9 3.9 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.9 3.9 0 0 0-.923-1.417A3.9 3.9 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599s.453.546.598.92c.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.5 2.5 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.5 2.5 0 0 1-.92-.598 2.5 2.5 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233s.008-2.388.046-3.231c.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92s.546-.453.92-.598c.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92m-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217m0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334"/>
-</svg>
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-twitter-x" viewBox="0 0 16 16">
-  <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z"/>
-</svg>
-            </div>
-        </div>
-    </footer>
-</body>
-<script>
-    const toggleBtn = document.getElementById('menu-toggle');
-    const navMenu = document.getElementById('nav-menu');
 
-    toggleBtn.addEventListener('click', () => {
-        navMenu.classList.toggle('active');
-    });
-</script>
+
+<div class="topbar">
+    <h1>Pengaduan - Selamat Datang, <?= htmlspecialchars($_SESSION['admin']) ?></h1>
+    <a href="../logout.php" class="logout-btn">Logout</a>
+</div>
+
+<div class="main fade-in">
+    <div class="content">
+        <h2>Pesan Kontak Masuk</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nama</th>
+                    <th>Email</th>
+                    <th>Subjek</th>
+                    <th>Pesan</th>
+                    <th>Tanggal</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                $no = 1;
+                if (mysqli_num_rows($result) > 0) {
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        echo "<tr>
+                            <td>{$no}</td>
+                            <td>" . htmlspecialchars($row['nama']) . "</td>
+                            <td>" . htmlspecialchars($row['email']) . "</td>
+                            <td>" . htmlspecialchars($row['subjek']) . "</td>
+                            <td>" . htmlspecialchars($row['pesan']) . "</td>
+                            <td>" . htmlspecialchars($row['tanggal']) . "</td>
+                        </tr>";
+                        $no++;
+                    }
+                } else {
+                    echo "<tr><td colspan='6'>Belum ada pesan masuk.</td></tr>";
+                }
+                ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
 </html>
