@@ -1,0 +1,644 @@
+/* Tentang Kami Section */
+.about-section {
+    padding: 100px 50px 50px;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    align-items: center;
+    justify-content: center;
+}
+
+.about-image img {
+    width: 100%;
+    max-width: 400px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.about-text {
+    max-width: 600px;
+}
+
+.about-text h2 {
+    font-size: 32px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.about-text p {
+    font-size: 16px;
+    margin-bottom: 16px;
+    line-height: 1.6;
+}
+
+.about-text .btn-cta {
+    background-color: #ffcc00;
+    color: black;
+    text-decoration: none;
+    padding: 10px 18px;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.about-text .btn-cta:hover {
+    background-color: #ffaa00;
+}
+
+/* Galeri Section */
+.galeri-section {
+    padding: 100px 50px 50px;
+    background-color: #fff;
+    color: #333;
+    text-align: center;
+}
+
+.galeri-section h2 {
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+.galeri-section p {
+    font-size: 16px;
+    margin-bottom: 40px;
+    color: #666;
+}
+
+.galeri-container {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.galeri-card {
+    width: 300px;
+    background: #f5f5f5;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    overflow: hidden;
+    transition: transform 0.3s;
+}
+
+.galeri-card:hover {
+    transform: translateY(-5px);
+}
+
+.galeri-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.galeri-card h3 {
+    margin: 16px;
+    font-size: 20px;
+    color: #222;
+}
+
+.galeri-card p {
+    margin: 0 16px 20px;
+    font-size: 14px;
+    color: #555;
+}
+
+/* Agenda Section */
+.agenda-section {
+    padding: 100px 30px 60px;
+    background-color: #fefefe;
+    color: #333;
+    text-align: center;
+}
+
+.agenda-section h2 {
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+.agenda-section p {
+    margin-bottom: 25px;
+    color: #666;
+}
+
+.agenda-table {
+    width: 90%;
+    max-width: 1000px;
+    margin: 0 auto;
+    border-collapse: collapse;
+    box-shadow: 0 0 15px rgba(0,0,0,0.05);
+}
+
+.agenda-table thead {
+    background-color: #007bff;
+    color: white;
+}
+
+.agenda-table th, .agenda-table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: center;
+}
+
+.agenda-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.agenda-table tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Kontak Section */
+.kontak-section {
+    padding: 100px 30px 50px;
+    text-align: center;
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+.kontak-section h2 {
+    font-size: 30px;
+    margin-bottom: 10px;
+}
+
+.kontak-section p {
+    margin-bottom: 30px;
+    color: #666;
+}
+
+.form-kontak {
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-kontak input,
+.form-kontak textarea {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+    resize: none;
+}
+
+.form-kontak button {
+    padding: 12px;
+    background-color: #007bff;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.form-kontak button:hover {
+    background-color: #0056b3;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background: url('../images/bg-login.jpg') no-repeat center center fixed;
+    background-size: cover;
+    font-family: Arial, sans-serif;
+}
+
+body.login-page {
+    margin: 0;
+    padding: 0;
+    background: url('public/assets/foto beranda.jpg') no-repeat center center fixed;
+    background-size: cover;
+    font-family: Arial, sans-serif;
+}
+
+/* Login Form */
+.login-container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-form {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 30px;
+    border-radius: 10px;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    text-align: center;
+    width: 300px;
+}
+
+.login-form h2 {
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+.login-form input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+}
+
+.login-form button {
+    width: 100%;
+    padding: 10px;
+    background-color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.login-form button:hover {
+    background-color: #ddd;
+}
+
+/* Footer */
+.footer {
+    background-color: #007acc;
+    color: #fff;
+    padding: 50px 30px 20px;
+    font-size: 14px;
+}
+
+.footer-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 40px;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.footer-section {
+    flex: 1;
+    min-width: 250px;
+}
+
+.footer-section h3 {
+    margin-bottom: 15px;
+    font-size: 18px;
+    color: #ffe600;
+}
+
+.footer-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-section ul li a {
+    color: #fff;
+    text-decoration: none;
+    display: block;
+    margin: 6px 0;
+    transition: color 0.3s;
+}
+
+.footer-section ul li a:hover {
+    color: #ffe600;
+}
+
+.footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.3);
+    margin-top: 30px;
+    padding-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    align-items: center;
+    font-size: 13px;
+}
+
+.social-icons a {
+    display: inline-block;
+    margin-left: 10px;
+}
+
+.social-icons img {
+    width: 20px;
+    filter: brightness(0) invert(1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    color: #fff;
+    background: url('public/assets/foto beranda.jpg') no-repeat center center fixed;
+    background-size: cover;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 50px;
+    background: rgba(0, 0, 0, 0.6);
+    position: absolute;
+    width: 100%;
+    z-index: 2;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #00aaff;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+nav ul li {
+    position: relative;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+    display: inline-block;
+    position: relative;
+    transition: color 0.3s ease, background-color 0.3s ease;
+    border-radius: 6px;
+}
+
+/* Efek warna transisi saat hover */
+nav ul li a:hover {
+    background-color: rgba(255, 255, 255, 0.85);
+    color: #000;
+}
+
+/* Underline sliding effect */
+nav ul li a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0%;
+    height: 2px;
+    background-color: #000000;
+    transition: width 0.3s ease-in-out;
+}
+
+nav ul li a:hover::after {
+    width: 100%;
+}
+
+.btn-masuk {
+    background-color: #007bff;
+    border-radius: 5px;
+    padding: 8px 14px;
+    color: white;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.btn-masuk:hover {
+    background-color: #0056b3;
+}
+
+/* Hero section */
+.hero {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+}
+
+.hero::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 1;
+}
+
+.hero-content {
+    z-index: 2;
+    max-width: 800px;
+    padding: 20px;
+    animation: fadeInUp 1s ease forwards;
+    transform: translateY(30px);
+    opacity: 0;
+}
+
+.hero-content h1 {
+    font-size: 42px;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.hero-content p {
+    font-size: 18px;
+    margin-bottom: 25px;
+}
+
+.btn-cta {
+    padding: 12px 24px;
+    background-color: #ffcc00;
+    color: black;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: background 0.3s;
+}
+
+.btn-cta:hover {
+    background-color: #ffaa00;
+}
+
+/* Animasi hero muncul */
+@keyframes fadeInUp {
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 15px 20px;
+    }
+
+    nav ul {
+        flex-direction: column;
+        width: 100%;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    nav ul li {
+        width: 100%;
+    }
+
+    nav ul li a {
+        width: 100%;
+        padding: 12px;
+        border-radius: 0;
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .hero-content {
+        padding: 10px;
+    }
+
+    .hero-content h1 {
+        font-size: 28px;
+    }
+
+    .hero-content p {
+        font-size: 16px;
+    }
+
+    .btn-cta {
+        padding: 10px 20px;
+        font-size: 16px;
+    }
+}
+.footer-contact {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-contact li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+  font-size: 14px;
+  color: #cfd8dc;
+}
+
+.footer-contact i {
+  width: 20px;
+  margin-right: 8px;
+  font-size: 16px;
+  color: #ffffff;
+}
+
+.footer-contact span {
+  font-weight: 600;
+  margin-right: 5px;
+  color: #ffffff;
+  min-width: 80px;
+}
+
+.footer-contact a {
+  color: #cfd8dc;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-contact a:hover {
+  color: #ffffff;
+  text-decoration: underline;
+}
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        padding: 20px;
+        gap: 20px;
+    }
+
+    .about-text, .about-image {
+        max-width: 100%;
+        text-align: center;
+    }
+
+    .galeri-card {
+        width: 90%;
+    }
+
+    .agenda-table {
+        font-size: 12px;
+        width: 100%;
+    }
+
+    .form-kontak {
+        padding: 0 10px;
+    }
+
+    .footer-container {
+        flex-direction: column;
+        gap: 30px;
+        text-align: center;
+    }
+
+    .footer-bottom {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+
+    .social-icons {
+        justify-content: center;
+        width: 100%;
+    }
+}
+/* Toggle Menu Button */
+.menu-toggle {
+    display: none;
+    font-size: 1.5rem;
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    margin-left: auto;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    nav {
+        position: absolute;
+        top: 60px;
+        right: 0;
+        background-color: #003366;
+        width: 100%;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease-out;
+        z-index: 1000;
+    }
+
+    nav ul {
+        flex-direction: column;
+        text-align: center;
+        padding: 0;
+    }
+
+    nav ul li {
+        margin: 10px 0;
+    }
+
+    .menu-toggle {
+        display: block;
+    }
+
+    nav.active {
+        max-height: 500px;
+        transition: max-height 0.3s ease-in;
+    }
+}
